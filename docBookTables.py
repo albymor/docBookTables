@@ -18,7 +18,7 @@
 from xml.etree.ElementTree import Element, SubElement, Comment, tostring
 from xml.etree import ElementTree
 from xml.dom import minidom
-from optparse import OptionParser
+import argparse
 import sys
 
 
@@ -63,37 +63,34 @@ def main(argv):
 	
 	required="rows cols".split()
 
-	parser = OptionParser()
+	parser = argparse.ArgumentParser(description='Create docBook table.')
+    
+	requiredArg = parser.add_argument_group('mandatory arguments')
 
-	parser.add_option(
-		"-r", "--rows", dest="rows", help="number of rows")
+	requiredArg.add_argument(
+		"-r", "--rows", dest="rows", help="number of rows", required=True)
 
-	parser.add_option(
-		"-c", "--cols", dest="cols", help="number of columns")
+	requiredArg.add_argument(
+		"-c", "--cols", dest="cols", help="number of columns", required=True)
 
-	parser.add_option(
+	parser.add_argument(
 		"-f", "--filename", dest="filename", help="name of output file", default='Table.xml')
 
-	parser.add_option(
+	parser.add_argument(
 		"-o", "--output", dest="output_opt", help="get the output file", default=False, action="store_true")
 
-	parser.add_option(
+	parser.add_argument(
 		"-v", "--verbose", dest="verbose_opt", help="print out the table", default=False, action="store_true")
 
-	(options, args) = parser.parse_args(sys.argv)
+	args = parser.parse_args(argv)
 
-	for r in required:
-	    if options.__dict__[r] is None:
-	        parser.error("parameter %s required"%r)
-	        sys.exit()
+	if args.verbose_opt:
+		print(crate_table(int(args.rows), int(args.cols)))
 
-	if options.verbose_opt:
-		print(crate_table(int(options.rows), int(options.cols)))
-
-	if options.output_opt:
-		out_file = open(options.filename,"w")
-		out_file.write(crate_table(int(options.rows), int(options.cols)))
+	if args.output_opt:
+		out_file = open(args.filename,"w")
+		out_file.write(crate_table(int(args.rows), int(args.cols)))
 		out_file.close()
 
 if __name__ == '__main__':
-	main(sys.argv)
+	main(sys.argv[1:])
