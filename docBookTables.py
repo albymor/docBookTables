@@ -38,8 +38,9 @@ def crate_table(n_rows, n_cols):
 	
 	tgroup = SubElement(table, 'tgroup', {'cols': str(n_cols)})
 	
+	width = 100//n_cols
 	for n_col in range(n_cols):
-		width_bod = SubElement(tgroup, 'colspec', {'colwidth': '25*'} )
+		width_bod = SubElement(tgroup, 'colspec', {'colwidth': '%d*'%width} )
 	
 	thead = SubElement(tgroup, 'thead')
 	row = SubElement(thead, 'row')
